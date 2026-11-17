@@ -1,5 +1,5 @@
 // Draws the game state. Reads from Game, never changes it.
-import { T } from '../core/world.js';
+import { T, OX, OY } from '../core/world.js';
 import { ENEMIES, SWORDS, ITEMS, NPCS } from '../core/data.js';
 import { hash2 } from '../core/util.js';
 import * as S from './sprites.js';
@@ -9,6 +9,9 @@ const GROUND = {
   [T.DEEP]: ['#1b4a6e', '#1d4f73'], [T.WATER]: ['#2a6f97', '#2e779f'], [T.SAND]: ['#e2c98f', '#dcc187'],
   [T.GRASS]: ['#5f9e4a', '#5a9746', '#64a44e'], [T.FLOWERS]: ['#62a24c', '#5c9c48'], [T.PATH]: ['#c8a46e', '#c19d68'],
   [T.FOREST]: ['#2f5a33', '#2b5530', '#33603a'], [T.DIRT]: ['#a5815a', '#9e7b55'], [T.STONE]: ['#a9a39a', '#b1aba2'],
+  [T.SNOW]: ['#e9eef5', '#e2e8f0', '#f2f5fa'], [T.ASH]: ['#4a4048', '#433a42', '#4f454d'], [T.LAVA]: ['#e0531f', '#ea6224'],
+  [T.SWAMP]: ['#4a5a3a', '#45553a', '#506040'], [T.BOG]: ['#2f4030', '#2b3b2c'], [T.CRYSTAL]: ['#cfe6ee', '#c4dde8', '#d8eef4'],
+  [T.STAR]: ['#3b3a78', '#363570', '#42418a'], [T.COBBLE]: ['#9a948c', '#8f8a83', '#a39d95'], [T.CORAL]: ['#f2b8b0', '#eeb0a8'],
 };
 
 export class Renderer {
@@ -68,6 +71,34 @@ export class Renderer {
         if (land(0, 1)) c.fillRect(px, py + ts * 0.88, ts, ts * 0.12);
         if (land(-1, 0)) c.fillRect(px, py, ts * 0.12, ts);
         if (land(1, 0)) c.fillRect(px + ts * 0.88, py, ts * 0.12, ts);
+      } else if (t === T.SNOW || t === T.CRYSTAL) {
+        c.fillStyle = t === T.SNOW ? 'rgba(160,180,210,0.35)' : 'rgba(120,200,230,0.5)';
+        for (let k = 0; k < 2; k++) c.fillRect(px + r(k + 3) * ts, py + r(k + 9) * ts, ts * 0.12, ts * 0.05);
+        if (t === T.CRYSTAL && h > 0.8) { c.fillStyle = 'rgba(255,255,255,0.8)'; c.fillRect(px + ts * 0.5, py + ts * 0.3, ts * 0.06, ts * 0.06); }
+      } else if (t === T.ASH || t === T.SWAMP || t === T.CORAL) {
+        c.fillStyle = t === T.ASH ? 'rgba(255,120,60,0.18)' : t === T.SWAMP ? 'rgba(20,30,15,0.35)' : 'rgba(255,255,255,0.35)';
+        for (let k = 0; k < 3; k++) { c.beginPath(); c.arc(px + r(k + 5) * ts, py + r(k + 7) * ts, ts * 0.045, 0, 7); c.fill(); }
+      } else if (t === T.LAVA) {
+        c.fillStyle = 'rgba(255,214,90,0.55)';
+        for (let k = 0; k < 2; k++) { c.beginPath(); c.arc(px + r(k + 5) * ts, py + r(k + 7) * ts, ts * 0.12, 0, 7); c.fill(); }
+        const solidN = (dx, dy) => w.tileAt(x + dx, y + dy) !== T.LAVA;
+        c.fillStyle = 'rgba(40,20,20,0.55)';
+        if (solidN(0, -1)) c.fillRect(px, py, ts, ts * 0.1); if (solidN(0, 1)) c.fillRect(px, py + ts * 0.9, ts, ts * 0.1);
+        if (solidN(-1, 0)) c.fillRect(px, py, ts * 0.1, ts); if (solidN(1, 0)) c.fillRect(px + ts * 0.9, py, ts * 0.1, ts);
+      } else if (t === T.BOG) {
+        c.fillStyle = 'rgba(140,170,100,0.35)';
+        if (h > 0.5) { c.beginPath(); c.arc(px + ts * 0.4, py + ts * 0.5, ts * 0.1, 0, 7); c.fill(); }
+        c.fillStyle = 'rgba(80,100,60,0.6)';
+        const dry = (dx, dy) => w.tileAt(x + dx, y + dy) !== T.BOG;
+        if (dry(0, -1)) c.fillRect(px, py, ts, ts * 0.1); if (dry(0, 1)) c.fillRect(px, py + ts * 0.9, ts, ts * 0.1);
+        if (dry(-1, 0)) c.fillRect(px, py, ts * 0.1, ts); if (dry(1, 0)) c.fillRect(px + ts * 0.9, py, ts * 0.1, ts);
+      } else if (t === T.STAR) {
+        c.fillStyle = 'rgba(20,20,60,0.4)';
+        for (let k = 0; k < 3; k++) c.fillRect(px + r(k + 3) * ts, py + r(k + 9) * ts, ts * 0.05, ts * 0.16);
+        if (h > 0.7) { c.fillStyle = '#fff3a8'; c.beginPath(); c.arc(px + r(31) * ts, py + r(32) * ts, ts * 0.04, 0, 7); c.fill(); }
+      } else if (t === T.COBBLE) {
+        c.strokeStyle = 'rgba(0,0,0,0.15)'; c.lineWidth = 1;
+        c.strokeRect(px + 0.5, py + 0.5, ts / 2, ts / 2); c.strokeRect(px + ts / 2 + 0.5, py + ts / 2 + 0.5, ts / 2 - 1, ts / 2 - 1);
       } else if (t === T.STONE) {
         c.strokeStyle = 'rgba(0,0,0,0.12)'; c.lineWidth = 1; c.strokeRect(px + 0.5, py + 0.5, ts - 1, ts - 1);
       } else if (t === T.PATH || t === T.DIRT || t === T.SAND) {
@@ -76,8 +107,8 @@ export class Renderer {
       }
     }
     // dock planks
-    if (cx * CHUNK <= 56 && cx * CHUNK + CHUNK > 54 && cy * CHUNK + CHUNK > 80) {
-      for (let y = 80; y <= 88; y++) for (let x = 54; x <= 56; x++) {
+    if (cx * CHUNK <= 56 + OX && cx * CHUNK + CHUNK > 54 + OX && cy * CHUNK + CHUNK > 80 + OY) {
+      for (let y = 80 + OY; y <= 88 + OY; y++) for (let x = 54 + OX; x <= 56 + OX; x++) {
         const px = (x - cx * CHUNK) * ts, py = (y - cy * CHUNK) * ts;
         if (px < 0 || py < 0 || px >= CHUNK * ts || py >= CHUNK * ts) continue;
         c.fillStyle = '#8a5f38'; c.fillRect(px, py, ts, ts);
@@ -94,7 +125,7 @@ export class Renderer {
     const c = cv.getContext('2d');
     for (let y = 0; y < w.H; y++) for (let x = 0; x < w.W; x++) { c.fillStyle = (GROUND[w.tileAt(x, y)] || GROUND[T.DEEP])[0]; c.fillRect(x * k, y * k, k, k); }
     for (const o of w.objects) {
-      c.fillStyle = o.kind === 'tree' ? (o.dark ? '#183020' : '#2e5e2a') : o.kind === 'house' ? '#e8dcc4' : o.kind === 'rock' ? '#777' : null;
+      c.fillStyle = o.kind === 'tree' ? TREE_MINI[o.style] || '#2e5e2a' : o.kind === 'house' ? '#e8dcc4' : o.kind === 'rock' ? '#777' : null;
       if (!c.fillStyle || o.kind === 'fence') continue;
       c.fillRect(o.x * k, o.y * k, (o.w || 1) * k, (o.h || 1) * k);
     }
@@ -139,7 +170,7 @@ export class Renderer {
     // collect everything that stands up, then draw back to front
     const list = [];
     const inView = (x, y, m = 2) => x > x0 - m && x < x1 + m && y > y0 - m && y < y1 + 4;
-    for (const o of g.world.objects) {
+    for (const o of g.world.objectsIn(x0 - 8, y0 - 2, x1 + 2, y1 + 4)) {
       if (!inView(o.x, o.y, (o.w || 1) + 2)) continue;
       const by = o.kind === 'house' ? o.y + o.h : o.kind === 'well' ? o.y + 1.9 : o.kind === 'boat' ? o.y + 1.4 : o.y + 0.85;
       list.push([by, 'obj', o]);
@@ -248,11 +279,14 @@ export class Renderer {
     }
   }
   drawEnemy(e) {
-    const g = this.g, c = this.c, d = ENEMIES[e.type];
+    const g = this.g, c = this.c, d = e.d;
     const hurt = g.t - e.hurtT < 0.15 ? 1 - (g.t - e.hurtT) / 0.15 : 0;
     this.at(e.x, e.y, () => {
       if (e.dead) { const k = (g.t - e.deathT) / 0.6; c.globalAlpha = 1 - k; c.translate(0, -k * 0.3); c.rotate(k * 0.8); }
+      const f = (e.hue ? `hue-rotate(${e.hue}deg) ` : '') + (hurt ? `brightness(${1 + hurt * 2})` : '');
+      if (f) c.filter = f;
       S.enemy(c, e, g.t, hurt, e.type === 'bat' ? '#c9a6ff' : '#ffb36b');
+      c.filter = 'none';
     });
     if (e.dead) return;
     const targeted = g.player.target === e.id, showBar = e.hp < d.hp || targeted;
@@ -269,6 +303,7 @@ export class Renderer {
   }
 }
 
+const TREE_MINI = { oak: '#2e5e2a', dark: '#183020', pine: '#2a4a3a', dead: '#3a3428', palm: '#3a7a3a', crystal: '#8fd0e8', charred: '#2a2224', star: '#8a7ad8' };
 const NPC_LOOK = Object.fromEntries(Object.entries(NPCS).map(([k, v]) => [k, { ...v, ponytail: k === 'willa' }]));
 
 export function questMark(g, id) {

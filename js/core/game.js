@@ -1,8 +1,8 @@
 // The game simulation. Pure logic, no DOM and no drawing, so a server can run the same code later.
 // Each frame:  game.step(dt, input)  → then read game.events (hit splats, messages, sounds, dialogs).
 
-import { TICK, ITEMS, SWORDS, ENEMIES, SHOP, QUESTS } from './data.js';
-import { buildWorld } from './world.js';
+import { TICK, ITEMS, SWORDS, ENEMIES, SHOP, QUESTS, scaledEnemy } from './data.js';
+import { buildWorld, OX, OY } from './world.js';
 import { rng, randInt, clamp, levelFor, XP_TABLE } from './util.js';
 
 const SKILLS = ['attack', 'strength', 'defence', 'hitpoints'];
@@ -45,8 +45,8 @@ export class Game {
   }
   curSword() { return SWORDS[this.player.sword] || SWORDS.old; }
   makeEnemy(s) {
-    const d = ENEMIES[s.type];
-    return { id: this.nextId++, type: s.type, x: s.x, y: s.y, sx: s.x, sy: s.y, hp: d.hp, fx: 0, fy: 1,
+    const d = scaledEnemy(s.type, s.lvl, s.name);
+    return { id: this.nextId++, type: s.type, d, hue: s.hue || 0, x: s.x, y: s.y, sx: s.x, sy: s.y, hp: d.hp, fx: 0, fy: 1,
              aggro: false, lastHit: -99, dead: false, respawnAt: 0, hurtT: -9, wander: null, wanderT: this.r() * 4 };
   }
 
@@ -136,6 +136,8 @@ export class Game {
     for (const e of this.enemies) this.updateEnemy(e, dt);
     this.updateNpcs(dt);
     this.updateCat(dt);
+    const reg = this.world.regionAt(p.x, p.y);
+    if (reg && reg.id !== this.regionId) { const first = !this.regionId; this.regionId = reg.id; if (!first) this.emit({ type: 'region', region: reg }); }
     this.tickAcc += dt;
     while (this.tickAcc >= TICK) { this.tickAcc -= TICK; this.tick++; this.onTick(); }
     // drop pickup by walking over it
@@ -201,7 +203,7 @@ export class Game {
     // enemies swing back
     for (const e of this.enemies) {
       if (e.dead || p.dead) continue;
-      const d = ENEMIES[e.type];
+      const d = e.d;
       if (!d.maxHit || !e.aggro) continue;
       if (Math.hypot(e.x - p.x, e.y - p.y) <= MELEE + 0.1 && this.tick - e.lastHit >= 3) {
         e.lastHit = this.tick; e.swingT = this.t;
@@ -212,13 +214,13 @@ export class Game {
     if (!p.dead && p.hp < this.maxHp() && ++p.regen >= 10) { p.regen = 0; p.hp++; }
     // respawns
     for (const e of this.enemies) if (e.dead && this.t >= e.respawnAt) {
-      Object.assign(e, { x: e.sx, y: e.sy, hp: ENEMIES[e.type].hp, dead: false, aggro: false, hurtT: -9 });
+      Object.assign(e, { x: e.sx, y: e.sy, hp: e.d.hp, dead: false, aggro: false, hurtT: -9 });
       this.emit({ type: 'spawn', id: e.id });
     }
   }
 
   playerHit(e) {
-    const p = this.player, d = ENEMIES[e.type], sw = this.curSword();
+    const p = this.player, d = e.d, sw = this.curSword();
     const sb = p.style === 'accurate' ? 3 : p.style === 'aggressive' ? 0 : 1;
     const att = (this.lvl('attack') + 8 + sb) * (sw.acc + 64), def = (d.def + 9) * 64;
     const chance = att > def ? 1 - (def + 2) / (2 * (att + 1)) : att / (2 * (def + 1));
@@ -234,7 +236,7 @@ export class Game {
   }
 
   enemyHit(e) {
-    const p = this.player, d = ENEMIES[e.type];
+    const p = this.player, d = e.d;
     const att = (d.lvl + 9) * 64, def = (this.lvl('defence') + 9 + (p.style === 'defensive' ? 3 : 0)) * 64;
     const chance = att > def ? 1 - (def + 2) / (2 * (att + 1)) : att / (2 * (def + 1));
     const dmg = this.r() < chance ? randInt(this.r, 1, d.maxHit) : 0;
@@ -245,7 +247,7 @@ export class Game {
   }
 
   killEnemy(e) {
-    const d = ENEMIES[e.type];
+    const d = e.d;
     e.dead = true; e.respawnAt = this.t + d.respawn; e.deathT = this.t;
     if (this.player.target === e.id) this.player.target = null;
     this.giveXp(STYLES[this.player.style], d.xp);
@@ -282,7 +284,7 @@ export class Game {
 
   updateEnemy(e, dt) {
     if (e.dead) return;
-    const d = ENEMIES[e.type], p = this.player;
+    const d = e.d, p = this.player;
     if (!d.speed) return;
     const dp = Math.hypot(p.x - e.x, p.y - e.y), home = Math.hypot(e.sx - e.x, e.sy - e.y);
     if (!p.dead && d.aggro && dp < d.aggro && this.combatLevel() < d.lvl * 2 + 4) e.aggro = true;
@@ -345,7 +347,7 @@ export class Game {
     const p = this.player;
     const n = this.nearestNpc(); if (n) return { label: 'Talk', npc: n.id };
     if (!this.flags.catFollowing && !this.flags.catHome && Math.hypot(this.cat.x - p.x, this.cat.y - p.y) < 2) return { label: 'Pet cat' };
-    for (const o of this.world.objects) {
+    for (const o of this.world.objectsIn(p.x - 3, p.y - 3, p.x + 3, p.y + 3)) {
       if ((o.kind === 'sign' && Math.hypot(o.x + 0.5 - p.x, o.y + 0.5 - p.y) < 1.8) ||
           (o.kind === 'boat' && Math.hypot(o.x + 1.5 - p.x, o.y - p.y) < 2.5) ||
           (o.kind === 'well' && Math.hypot(o.x + 1 - p.x, o.y + 1 - p.y) < 2)) return { label: o.kind === 'sign' ? 'Read' : 'Look', obj: o };
@@ -360,8 +362,8 @@ export class Game {
     if (o.kind === 'sign') this.msg(`The sign says: "${o.text}"`);
     else if (o.kind === 'well') this.msg('You peer into the well. A coin glints far below. Not worth the climb.');
     else if (o.kind === 'boat') this.dialog('Boat', this.quests.test.stage === 3
-      ? ["The boat to Mossreach is being fixed up.", "When it's ready, it will take you across the water to the city. (Coming in the next update!)"]
-      : ["A little sailboat bobs at the dock.", "Coach Bram said you're not ready to leave the island yet."]);
+      ? ["A little sailboat bobs at the dock.", "You don't need it to reach Mossreach: the road north goes all the way there on foot."]
+      : ["A little sailboat bobs at the dock.", "One day it might carry you to faraway lands. For now the whole world is one big continent, so walk!"]);
   }
   findCat() {
     const q = this.quests.cat;
@@ -396,10 +398,10 @@ export class Game {
         ts.stage = 3; this.removeItem('headband', 1); if (!p.swords.includes('tide')) p.swords.push('tide'); p.coins += 300; this.giveXp('strength', 400);
         this.emit({ type: 'quest' }); this.emit({ type: 'sfx', name: 'quest' });
         return say(['A ninja headband... stuffed inside the Colossus? Someone has been hiding things on our island.',
-          "This is the mark of the clan that took your dad. Their base is across the water, in Mossreach.", "Take my old Tide Cutter. You've earned it.",
+          "This is the mark of the clan that took your dad. Their trail leads north, up the road to Mossreach.", "Take my old Tide Cutter. You've earned it.",
           'Quest complete: The Final Test', 'Reward: Tide Cutter, 300 coins, 400 Strength XP']);
       }
-      return say(["You're ready, Rels. When the boat's fixed, go and find your dad."]);
+      return say(["You're ready, Rels. Take the road north to Mossreach and follow the ninjas' trail. Be careful out there."]);
     }
     if (id === 'willa') {
       const q = Q.wings;
@@ -429,7 +431,8 @@ export class Game {
       const lines = [
         ["Rels! Is it true you're going to fight ninjas?! So cool."],
         ['Did you know? Brutes have shields. You need a good sword to get through.'],
-        ['I saw a ninja camp in the northwest. Way too scary for me.'],
+        ['I heard ninjas hide just outside Mossreach, up the road north. Way too scary for me.'],
+        ['My uncle says the whole world is one big land. Walk far enough and you reach snow, or volcanoes!'],
         ['The fishing boat at the dock has a hole in it. Captain says it will be fixed soon.'],
       ];
       return say(lines[Math.floor(this.r() * lines.length)]);
@@ -439,14 +442,15 @@ export class Game {
   // ---------- save / load ----------
   serialize() {
     const p = this.player;
-    return { v: 1, p: { x: p.x, y: p.y, hp: p.hp, xp: p.xp, style: p.style, inv: p.inv, coins: p.coins, swords: p.swords, sword: p.sword },
+    return { v: 2, p: { x: p.x, y: p.y, hp: p.hp, xp: p.xp, style: p.style, inv: p.inv, coins: p.coins, swords: p.swords, sword: p.sword },
              q: this.quests, f: this.flags };
   }
   load(s) {
     try {
-      if (!s || s.v !== 1) return;
+      if (!s || (s.v !== 1 && s.v !== 2)) return;
       const p = this.player;
       Object.assign(p, s.p, { xp: { ...p.xp, ...s.p.xp } });
+      if (s.v === 1) { p.x += OX; p.y += OY; }   // old saves were made on the small Ember Key map
       if (p.inv.length !== INV_SIZE) p.inv = [...p.inv, ...Array(INV_SIZE).fill(null)].slice(0, INV_SIZE);
       if (this.world.isSolid(p.x, p.y)) { p.x = this.world.start.x; p.y = this.world.start.y; }
       for (const k in s.q) if (this.quests[k]) this.quests[k] = s.q[k];

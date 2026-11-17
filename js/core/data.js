@@ -68,3 +68,39 @@ export const NPCS = {
   nana:  { name: 'Nana Pell',   shirt: '#7a6cc0', hair: '#eeeeee', skin: '#e8c0a0' },
   finn:  { name: 'Finn',        shirt: '#2f7fd6', hair: '#e8c35a', skin: '#e9b48e', kid: true },
 };
+
+// ---------- Pangea: the 8 regions of the one big continent ----------
+// cx/cy/r are in tiles. lvl = recommended level range. style = what the region is known for.
+export const REGIONS = [
+  { id: 'ember',     name: 'Ember Key',   lvl: [1, 10],  style: 'Swordsmanship',      cx: 150, cy: 190, r: 34, color: '#ffb36b' },
+  { id: 'mossreach', name: 'Mossreach',   lvl: [10, 20], style: 'Archers',            cx: 150, cy: 112, r: 30, color: '#ffd27a' },
+  { id: 'saltglass', name: 'Saltglass',   lvl: [20, 30], style: 'Earth benders',      cx: 78,  cy: 188, r: 27, color: '#bff0ff' },
+  { id: 'duskfen',   name: 'Duskfen',     lvl: [30, 40], style: 'Necromancy',         cx: 70,  cy: 122, r: 28, color: '#c9a6ff' },
+  { id: 'frostmere', name: 'Frostmere',   lvl: [40, 50], style: 'Strength warriors',  cx: 76,  cy: 52,  r: 30, color: '#e8f4ff' },
+  { id: 'cinder',    name: 'Cinder Isle', lvl: [50, 65], style: 'Fire benders',       cx: 226, cy: 54,  r: 28, color: '#ff7a3a' },
+  { id: 'coral',     name: 'Coral Drift', lvl: [65, 80], style: 'Water benders',      cx: 230, cy: 132, r: 30, color: '#ff8fa3' },
+  { id: 'starfall',  name: 'Starfall',    lvl: [80, 99], style: 'Air & star magic',   cx: 150, cy: 50,  r: 28, color: '#fff3a8' },
+];
+
+// Placeholder monsters for each region: existing monster bodies, re-tinted and scaled to the region's levels.
+// type = body to draw, lvl = its level, hue = colour shift in degrees. New monster art per region comes later.
+export const REGION_MONSTERS = {
+  mossreach: [{ type: 'brute', lvl: 12, n: 5 }, { type: 'ninja', lvl: 16, n: 6 }, { type: 'bat', name: 'Rooftop bat', lvl: 11, n: 4 }],
+  saltglass: [{ type: 'slime', name: 'Crystal slime', lvl: 22, hue: 160, n: 6 }, { type: 'brute', name: 'Glass golem', lvl: 28, hue: 170, n: 4 }],
+  duskfen:   [{ type: 'bat', name: 'Bog bat', lvl: 32, hue: 70, n: 6 }, { type: 'brute', name: 'Bog brute', lvl: 38, hue: 80, n: 4 }],
+  frostmere: [{ type: 'slime', name: 'Ice slime', lvl: 42, hue: 190, n: 6 }, { type: 'brute', name: 'Frost giant', lvl: 48, hue: 200, n: 4 }],
+  cinder:    [{ type: 'slime', name: 'Magma slime', lvl: 55, hue: -10, n: 6 }, { type: 'brute', name: 'Ash brute', lvl: 62, hue: 0, n: 4 }],
+  coral:     [{ type: 'slime', name: 'Reef slime', lvl: 68, hue: 300, n: 6 }, { type: 'ninja', name: 'Tide ninja', lvl: 76, hue: 190, n: 4 }],
+  starfall:  [{ type: 'bat', name: 'Void bat', lvl: 84, hue: 230, n: 6 }, { type: 'ninja', name: 'Star ninja', lvl: 92, hue: 40, n: 5 }],
+};
+
+// stats for a monster body at a given level (base ENEMIES entry scaled up)
+export function scaledEnemy(type, lvl, name) {
+  const b = ENEMIES[type];
+  if (!lvl || lvl === b.lvl) return { ...b, name: name || b.name };
+  const k = lvl / b.lvl;
+  return { ...b, name: name || b.name, lvl,
+    hp: Math.round(b.hp * Math.pow(k, 0.85)), maxHit: Math.max(1, Math.round(b.maxHit * Math.pow(k, 0.7))),
+    def: Math.round(b.def + lvl * 0.8), xp: Math.round(b.xp * k),
+    drops: b.drops.map(([it, a, c, ch]) => it === 'coins' ? [it, Math.round(a * k), Math.round(c * k), ch] : [it, a, c, ch]) };
+}

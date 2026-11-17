@@ -142,8 +142,7 @@ export function cat(c, t, moving, dir) {
 
 // ---------- enemies ----------
 export function enemy(c, e, t, hurt, accent) {
-  const k = e.type, flash = hurt > 0;
-  if (flash) c.filter = `brightness(${1 + hurt * 2})`;
+  const k = e.type;
   const bob = Math.sin(t * 6 + e.id) * 0.03;
   if (k === 'dummy') {
     shadow(c, 0.28, 0.09);
@@ -212,21 +211,63 @@ export function enemy(c, e, t, hurt, accent) {
     for (const sd of [-1, 1]) { c.beginPath(); c.moveTo(sd * 0.1, -1.62); c.lineTo(sd * 0.25, -1.85); c.lineTo(sd * 0.35, -1.8); c.moveTo(sd * 0.2, -1.77); c.lineTo(sd * 0.18, -1.95); c.stroke(); }
     ell(c, -0.07, -1.5, 0.04, 0.035, '#ff4b3b'); ell(c, 0.07, -1.5, 0.04, 0.035, '#ff4b3b');
   }
-  c.filter = 'none';
 }
 export const enemyHeight = k => ({ dummy: 1.25, slime: 0.5, bat: 1.45, brute: 1.85, ninja: 1.35, colossus: 4.4 })[k] || 1.3;
 
 // ---------- world props ----------
 export function tree(c, o, t) {
+  const st = o.style || 'oak', sway = Math.sin(t * 0.8 + o.x) * 0.02, big = 0.85 + o.v * 0.3;
   shadow(c, 0.5, 0.16, 0.28);
-  c.fillStyle = o.dark ? '#3a2618' : '#5a3a22'; c.fillRect(-0.1, -0.7, 0.2, 0.7);
-  const sway = Math.sin(t * 0.8 + o.x) * 0.02, g = o.dark ? ['#16301f', '#1f4229', '#2d5a37'] : ['#2f6b2f', '#3f8a3a', '#5aa84a'];
-  const big = 0.85 + o.v * 0.3;
-  ell(c, sway, -1.15 * big, 0.62 * big, 0.55 * big, g[0]);
-  ell(c, -0.18 + sway, -1.3 * big, 0.38 * big, 0.36 * big, g[1]);
-  ell(c, 0.2 + sway, -1.22 * big, 0.36 * big, 0.32 * big, g[1]);
-  ell(c, -0.05 + sway, -1.5 * big, 0.3 * big, 0.25 * big, g[2]);
-  if (!o.dark && o.v > 0.7) { ell(c, 0.2, -1.1, 0.06, 0.06, '#d8443a'); ell(c, -0.25, -1.25, 0.06, 0.06, '#d8443a'); }
+  if (st === 'pine') {
+    c.fillStyle = '#4a3222'; c.fillRect(-0.08, -0.5, 0.16, 0.5);
+    for (let k = 0; k < 3; k++) {
+      const y = -0.45 - k * 0.42 * big, w = (0.62 - k * 0.15) * big;
+      c.fillStyle = k % 2 ? '#2f5a46' : '#264c3c'; c.beginPath(); c.moveTo(-w + sway, y); c.lineTo(sway * 2, y - 0.62 * big); c.lineTo(w + sway, y); c.closePath(); c.fill();
+      c.fillStyle = 'rgba(255,255,255,0.85)'; c.beginPath(); c.moveTo(-w * 0.5 + sway, y - 0.3 * big); c.lineTo(sway * 2, y - 0.62 * big); c.lineTo(w * 0.5 + sway, y - 0.3 * big); c.closePath(); c.fill();
+    }
+    return;
+  }
+  if (st === 'dead' || st === 'charred') {
+    const col = st === 'dead' ? '#4a4034' : '#231b1d';
+    c.strokeStyle = col; c.lineCap = 'round'; c.lineWidth = 0.14;
+    c.beginPath(); c.moveTo(0, 0); c.lineTo(0.02, -1.2 * big); c.stroke();
+    c.lineWidth = 0.07;
+    for (const [a, b, d] of [[-0.1, -0.7, -0.4], [0.05, -0.9, 0.42], [0, -1.15, -0.3], [0.02, -1.0, 0.25]]) {
+      c.beginPath(); c.moveTo(a, b * big); c.lineTo(a + d, (b - 0.35) * big); c.stroke();
+    }
+    if (st === 'charred' && o.v > 0.5) { c.fillStyle = 'rgba(255,120,40,0.8)'; c.beginPath(); c.arc(0.02, -0.6, 0.05, 0, 7); c.fill(); }
+    if (st === 'dead') { c.fillStyle = 'rgba(160,190,120,0.5)'; ell(c, -0.3, -0.95 * big, 0.12, 0.05, c.fillStyle); }
+    return;
+  }
+  if (st === 'palm') {
+    c.strokeStyle = '#8a6a42'; c.lineWidth = 0.12; c.lineCap = 'round';
+    c.beginPath(); c.moveTo(0, 0); c.quadraticCurveTo(0.2, -0.7, 0.1 + sway, -1.5 * big); c.stroke();
+    const tx = 0.1 + sway, ty = -1.5 * big;
+    c.fillStyle = '#3a8a3a';
+    for (let k = 0; k < 6; k++) {
+      const a = k / 6 * Math.PI * 2 + 0.3;
+      c.beginPath(); c.ellipse(tx + Math.cos(a) * 0.32, ty + Math.sin(a) * 0.14 + 0.05, 0.36, 0.08, a, 0, 7); c.fill();
+    }
+    ell(c, tx - 0.05, ty + 0.08, 0.06, 0.06, '#6b4a2b'); ell(c, tx + 0.06, ty + 0.1, 0.06, 0.06, '#6b4a2b');
+    return;
+  }
+  if (st === 'crystal') {
+    const cols = ['#9fe0f5', '#c8f2ff', '#7cc8e8'];
+    for (const [dx, h, w, k] of [[-0.18, 0.8, 0.14, 0], [0.15, 1.15, 0.17, 1], [0, 1.45, 0.2, 2], [0.32, 0.6, 0.11, 0]]) {
+      c.fillStyle = cols[k]; c.beginPath(); c.moveTo(dx - w, 0); c.lineTo(dx - w * 0.8, -h * big * 0.8); c.lineTo(dx, -h * big); c.lineTo(dx + w * 0.8, -h * big * 0.8); c.lineTo(dx + w, 0); c.closePath(); c.fill();
+      c.fillStyle = 'rgba(255,255,255,0.5)'; c.fillRect(dx - w * 0.3, -h * big * 0.75, w * 0.25, h * big * 0.5);
+    }
+    return;
+  }
+  // round-canopy trees: oak, dark (Gloomwood), star (Starfall)
+  const pal = st === 'dark' ? ['#16301f', '#1f4229', '#2d5a37'] : st === 'star' ? ['#3d2f7a', '#5a48a8', '#8a78d8'] : ['#2f6b2f', '#3f8a3a', '#5aa84a'];
+  c.fillStyle = st === 'dark' ? '#3a2618' : st === 'star' ? '#d8d0f0' : '#5a3a22'; c.fillRect(-0.1, -0.7, 0.2, 0.7);
+  ell(c, sway, -1.15 * big, 0.62 * big, 0.55 * big, pal[0]);
+  ell(c, -0.18 + sway, -1.3 * big, 0.38 * big, 0.36 * big, pal[1]);
+  ell(c, 0.2 + sway, -1.22 * big, 0.36 * big, 0.32 * big, pal[1]);
+  ell(c, -0.05 + sway, -1.5 * big, 0.3 * big, 0.25 * big, pal[2]);
+  if (st === 'oak' && o.v > 0.7) { ell(c, 0.2, -1.1, 0.06, 0.06, '#d8443a'); ell(c, -0.25, -1.25, 0.06, 0.06, '#d8443a'); }
+  if (st === 'star') for (let k = 0; k < 4; k++) { const tw = 0.5 + 0.5 * Math.sin(t * 3 + k * 2 + o.x); ell(c, -0.3 + k * 0.2 + sway, -1.1 - (k % 2) * 0.3, 0.04 * tw + 0.01, 0.04 * tw + 0.01, '#fff3a8'); }
 }
 export function rock(c, o) {
   const s = o.big ? 1.2 : 0.8;

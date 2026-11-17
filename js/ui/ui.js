@@ -44,6 +44,7 @@ export class UI {
     else if (e.type === 'shop') this.pendingShop = true;
     else if (e.type === 'quest') { if (this.panel === 'quests') this.render(); }
     else if (e.type === 'died') this.toast('Knocked out!');
+    else if (e.type === 'region') this.regionBanner(e.region);
   }
   addLog(text, color = '#fff4ea') {
     const el = document.createElement('div'); el.className = 'line'; el.textContent = text; el.style.color = color;
@@ -55,6 +56,14 @@ export class UI {
   xpDrop(skill, amt) {
     const el = document.createElement('div'); el.className = 'xpdrop'; el.textContent = `+${amt} ${SKILL_NAME[skill]}`;
     $('xpdrops').appendChild(el); setTimeout(() => el.remove(), 1600);
+  }
+  regionBanner(r) {
+    const cl = this.g.combatLevel(), [a, b] = r.lvl;
+    const danger = cl < a - 5 ? ' · Dangerous!' : '', col = cl < a - 5 ? '#ff7a6a' : cl > b ? '#9fe09f' : '#ffd84a';
+    $('rbName').textContent = r.name; $('rbName').style.color = r.color;
+    $('rbSub').textContent = `Level ${a}-${b} · ${r.style}${danger}`; $('rbSub').style.color = col;
+    const el = $('regionBanner'); el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
+    this.addLog(`You enter ${r.name} (level ${a}-${b}).`, r.color);
   }
   toast(text) {
     const el = $('toast'); el.textContent = text; el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
