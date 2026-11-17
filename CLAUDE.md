@@ -23,7 +23,8 @@ A top-down open-world RPG for the owner's kid, starring **Rels** (brown ponytail
 - **Commands in, updates out:** player actions are command objects (`MoveCommand`, `AttackCommand`, ...) handled through `CommandRouter`, returning `StateUpdate`s. The entry point is `updateTick(state, deltaSeconds, commands, router)`.
 - **Data-driven:** stats, levels and rules live in plain data objects, not hardcoded in functions.
 - **One language: TypeScript** in `server/`. Don't mix languages there.
-- Test with `cd server && tsc -p . && node dist/test/core.test.js` before pushing.
+- Test with `cd server && tsc -p . && node dist/test/run-all.js` before pushing.
+- **Design reminder:** health is hidden (no HP bar, fight to the death). A future "wounded state" at low health % will change walk stance, reduce move speed and slow attack speed. Hook it into `effectiveMoveSpeed()` in `player/player-state.ts`.
 
 ## Rules for the prototype (root `js/`)
 - Plain JavaScript ES modules, **no build step**, so it runs on GitHub Pages and can be wrapped as an iOS/Android app later (Capacitor).

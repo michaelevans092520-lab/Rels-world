@@ -10,7 +10,18 @@ Newest first. Update this at the end of every work session.
 - New `server/` folder (TypeScript, no runtime dependencies): `GameState`, `Command` / `StateUpdate` / `CommandResult`, `CommandRouter`, and `updateTick()`. 7 passing tests with a hand-written test runner.
 - Approved dev tool: TypeScript compiler (Apache-2.0).
 
-**Next up:** waiting on the owner's first design spec. Suggested: the player's state variables and the `MoveCommand` rules (speed, collision, what the server checks).
+- **Spec 1 (owner): Player + MoveCommand.** `PlayerState` (id, name, level, x/y/z, facingAngle, baseMoveSpeed 5.0, hidden currentHealth/maxHealth, stunned/rooted), 20 ticks/s, MoveCommand with a normalized direction vector + facing angle, server checks (alive/not stunned/rooted, vector length ≤ 1.0, no walls or map edge, per-tick distance cap including multiple commands in one tick). Wounded-state reminders are in the code comments. 20 tests pass.
+
+**Next up:** owner's answers to the spec-1 questions below, then the next spec (combat? terrain model?).
+
+**Spec-1 questions for the owner (current behavior in brackets)**
+- Facing angle units [radians, 0 = +X, any value accepted, not wrapped].
+- Z height [stored, never changed by MoveCommand].
+- Blocked move [whole move rejected, player stays put] or slide along walls?
+- Player size for collision [treated as a point].
+- Move rejected while stunned [facing doesn't change either].
+- Terrain model for cliffs/steep slopes [not designed; a box placeholder is used in tests].
+- Does input persist between ticks [no: one MoveCommand moves one tick; the client sends one every tick while moving]?
 
 **Open decisions**
 - Visual engine for the client (not chosen yet).

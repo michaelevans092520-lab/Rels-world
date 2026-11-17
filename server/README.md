@@ -14,9 +14,21 @@ A visual engine or a network layer only ever sends commands and reads updates. I
 Requires Node.js and the TypeScript compiler (`typescript`, Apache-2.0).
 ```
 npm install
-npm test
+npm test        # compiles and runs test/run-all
 ```
 There are no runtime dependencies. Tests use a small runner in `test/test-runner.ts` instead of a testing library.
 
+## Files
+| File | What it does |
+|---|---|
+| `src/core/game-state.ts` | `GameState`: tick, clock, players |
+| `src/core/commands.ts` | `Command`, `StateUpdate`, `CommandResult` |
+| `src/core/command-router.ts` | Maps command types to handlers |
+| `src/core/update-tick.ts` | `updateTick()`: one server step |
+| `src/data/game-rules.ts` | Tuning data: 20 ticks/s, base speed 5.0 |
+| `src/player/player-state.ts` | `PlayerState`, `createPlayer`, `canMove`, `effectiveMoveSpeed` |
+| `src/player/move-command.ts` | `MoveCommand` checks and movement |
+| `src/world/movement-blocker.ts` | What blocks movement (interface + simple box placeholder) |
+
 ## Status
-Only the plumbing exists so far: the state skeleton, commands, the router and the tick. Gameplay (players, movement, combat, inventory, trading) will be added from the owner's designs, one reviewed module at a time.
+Built from the owner's specs: core plumbing (spec 0), Player + MoveCommand (spec 1). Combat, inventory, trading etc. wait for their designs.

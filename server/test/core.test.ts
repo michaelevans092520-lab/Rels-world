@@ -5,7 +5,7 @@ import { acceptCommand, Command } from '../src/core/commands.js';
 import { CommandRouter } from '../src/core/command-router.js';
 import { createGameState, GameState } from '../src/core/game-state.js';
 import { updateTick } from '../src/core/update-tick.js';
-import { check, checkEqual, checkThrows, runTests, TestCase } from './test-runner.js';
+import { check, checkEqual, checkThrows, TestCase } from './test-runner.js';
 
 /** A router with one fake command that just reports the tick it saw. */
 function makeTestRouter(): CommandRouter {
@@ -15,15 +15,15 @@ function makeTestRouter(): CommandRouter {
   return router;
 }
 
-const tests: TestCase[] = [
+export const coreTests: TestCase[] = [
   { name: 'a new world starts at tick 0 and 0 seconds', run: () => {
-    checkEqual(createGameState(), { tickNumber: 0, elapsedSeconds: 0 }, 'fresh state is wrong');
+    checkEqual(createGameState(), { tickNumber: 0, elapsedSeconds: 0, players: {} }, 'fresh state is wrong');
   } },
   { name: 'each tick adds 1 to the tick number and deltaSeconds to the clock', run: () => {
     const state = createGameState(), router = new CommandRouter();
     updateTick(state, 0.5, [], router);
     updateTick(state, 0.25, [], router);
-    checkEqual(state, { tickNumber: 2, elapsedSeconds: 0.75 }, 'clock did not advance correctly');
+    checkEqual([state.tickNumber, state.elapsedSeconds], [2, 0.75], 'clock did not advance correctly');
   } },
   { name: 'a negative or broken time step is refused', run: () => {
     const state = createGameState(), router = new CommandRouter();
@@ -53,7 +53,3 @@ const tests: TestCase[] = [
     checkThrows(() => router.register('test', () => acceptCommand([])), 'duplicate handler was allowed');
   } },
 ];
-
-const failures = runTests('Core plumbing', tests);
-console.log(failures === 0 ? '\nAll tests passed.' : `\n${failures} test(s) failed.`);
-if (failures > 0) process.exitCode = 1;
