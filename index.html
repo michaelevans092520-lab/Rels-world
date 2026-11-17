@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#14090f">
+<title>Rel's World</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="game"></canvas>
+
+<div id="hud" hidden>
+  <div class="topl">
+    <div class="hp"><span class="heart">♥</span><div class="hpbar"><i id="hpFill"></i></div><span id="hpText">10/10</span></div>
+    <div class="cb">Combat <b id="cbText">3</b> · 🪙 <b id="coinText">0</b></div>
+  </div>
+  <div class="topr">
+    <canvas id="minimap" width="120" height="120"></canvas>
+    <div class="menu">
+      <button id="btnBag" class="mbtn">Bag</button>
+      <button id="btnQuests" class="mbtn">Quests</button>
+      <button id="btnSkills" class="mbtn">Skills</button>
+    </div>
+  </div>
+  <div id="xpdrops"></div>
+  <div id="log"></div>
+  <div id="toast"></div>
+  <div class="actions">
+    <button id="btnPotion" class="abtn small" hidden aria-label="Heal">♥<span id="potionN">0</span></button>
+    <button id="btnAct" class="abtn mid" hidden>Talk</button>
+    <button id="btnAttack" class="abtn big" aria-label="Attack">⚔</button>
+  </div>
+  <div id="stick"><div id="knob"></div></div>
+  <div class="movehint">Drag on the left side to move</div>
+</div>
+
+<div id="dialog" hidden>
+  <div class="dlgname" id="dlgName"></div>
+  <p id="dlgText"></p>
+  <div class="dlgmore" id="dlgMore">Tap to continue ▸</div>
+</div>
+
+<div id="sheetWrap" hidden>
+  <div id="sheet">
+    <div class="sheethead"><h2 id="sheetTitle">Bag</h2><button id="sheetClose" aria-label="Close">✕</button></div>
+    <div id="sheetBody"></div>
+  </div>
+</div>
+
+<div id="title">
+  <div class="tbox">
+    <p class="eyebrow">An adventure on Ember Key</p>
+    <h1>Rel's World</h1>
+    <p class="sub">Train with your sword, help the village, find your cat, and get ready to bring Dad home.</p>
+    <button id="btnContinue" class="btn" hidden>Continue</button>
+    <button id="btnNew" class="btn ghost">Play</button>
+    <p class="tiny">Phone: drag the left side to move, tap ⚔ to attack.<br>Keyboard: WASD to move, Space to attack, E to talk, B bag, Q quests, K skills, H heal.</p>
+  </div>
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
