@@ -64,8 +64,34 @@ export class Input {
   }
   press(name) { this.pending[name] = true; }
 
+  // Game controllers (Xbox, PlayStation, Switch Pro...) through the browser Gamepad API.
+  // Left stick / d-pad move · A attack (and next line in dialogs) · X talk · B close · Y bag · LB/RB heal · Select skills · Start quests
+  pollPad() {
+    const pads = navigator.getGamepads ? navigator.getGamepads() : [];
+    const gp = [...pads].find(p => p && p.connected);
+    if (!gp) return null;
+    const btn = i => !!(gp.buttons[i] && gp.buttons[i].pressed);
+    const prev = this.padPrev || [];
+    const pressed = i => btn(i) && !prev[i];
+    this.padPrev = gp.buttons.map(b => b.pressed);
+    if (pressed(0)) { this.pending.attack = true; this.onKey && this.onKey(' '); }
+    if (pressed(2)) { this.pending.interact = true; this.onKey && this.onKey('e'); }
+    if (pressed(1)) this.onKey && this.onKey('escape');
+    if (pressed(3)) this.onKey && this.onKey('b');
+    if (pressed(4) || pressed(5)) this.onKey && this.onKey('h');
+    if (pressed(8)) this.onKey && this.onKey('k');
+    if (pressed(9)) this.onKey && this.onKey('q');
+    let x = gp.axes[0] || 0, y = gp.axes[1] || 0;
+    if (Math.hypot(x, y) < 0.2) { x = 0; y = 0; }                    // dead zone
+    x += (btn(15) ? 1 : 0) - (btn(14) ? 1 : 0); y += (btn(13) ? 1 : 0) - (btn(12) ? 1 : 0);
+    const l = Math.hypot(x, y); if (l > 1) { x /= l; y /= l; }
+    return l ? { x, y } : null;
+  }
+
   read() {
     let mx = this.vx, my = this.vy;
+    const pad = this.pollPad();
+    if (pad) { mx = pad.x; my = pad.y; }
     const k = this.keys;
     if (k.size) {
       mx = (k.has('d') || k.has('arrowright') ? 1 : 0) - (k.has('a') || k.has('arrowleft') ? 1 : 0);

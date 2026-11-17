@@ -12,7 +12,7 @@ export const ITEMS = {
   shard:     { name: 'Shield shard', stack: true, icon: 'shard', value: 12, info: 'A chip off a brute shield.' },
   potion:    { name: 'Potion', stack: true, icon: 'potion', value: 15, heal: 12, info: 'Heals 12 HP. Tap to drink.' },
   apple:     { name: 'Apple', stack: true, icon: 'apple', value: 2, heal: 4, info: 'Heals 4 HP. Tap to eat.' },
-  headband:  { name: 'Ninja headband', stack: false, icon: 'band', quest: true, info: 'Dropped by the ninja who took Dad.' },
+  trophy:    { name: 'Colossus horn', stack: false, icon: 'horn', quest: true, info: 'Proof you beat the Straw Colossus. Show Coach Bram.' },
 };
 
 // Swords carry over from the runner. dmg = max hit bonus, spd = ticks between swings (2 = 1.2 s, 1 = fast 0.6 s)
@@ -40,7 +40,7 @@ export const ENEMIES = {
   ninja:   { name: 'Shadow ninja',   lvl: 16, hp: 26, maxHit: 5, def: 12, speed: 3.6, aggro: 6, xp: 60, respawn: 40,
              drops: [['coins', 15, 40, 1], ['potion', 1, 1, 0.3]] },
   colossus:{ name: 'Straw Colossus', lvl: 20, hp: 60, maxHit: 5, def: 10, speed: 1.4, aggro: 7, xp: 220, respawn: 120, boss: true,
-             drops: [['coins', 120, 160, 1], ['potion', 2, 3, 1], ['headband', 1, 1, 1]] },
+             drops: [['coins', 120, 160, 1], ['potion', 2, 3, 1], ['trophy', 1, 1, 1]] },
 };
 
 // Shop stock (Marta's general store)
@@ -57,7 +57,7 @@ export const QUESTS = {
   cat: { name: 'Where Did the Cat Go?', giver: 'nana', need: 1,
     steps: ['Talk to Nana Pell by the well.', 'Search Gloomwood for your cat. Nana saw it run deep into the trees.', 'Bring the cat home to Nana.'] },
   test: { name: 'The Final Test', giver: 'bram', need: 1, requires: 'training',
-    steps: ['Finish Training Day first.', 'Defeat the Straw Colossus in the north arena.', 'Show Coach Bram the ninja headband.'] },
+    steps: ['Finish Training Day first.', 'Defeat the Straw Colossus in the north arena.', 'Show Coach Bram the Colossus horn.'] },
 };
 
 // NPC placement is by tile and defined in world.js; looks are here.

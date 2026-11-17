@@ -23,13 +23,10 @@ function start(fresh) {
   window.__game = game;                 // handy for testing in the console
   $('title').hidden = true; $('hud').hidden = false;
   if (fresh || !game.flags.seenIntro) {
+    // no cutscenes: just quick tips in the chat log while you play
     game.flags.seenIntro = true;
-    game.dialog("Rel's World", [
-      'The night the ninjas came, they took Dad and vanished across the sea.',
-      "Rels kept Dad's old sword. Now she has to get strong enough to bring him home.",
-      'Move with the joystick (or WASD). Tap Attack near a monster, or tap the monster itself.',
-      'Coach Bram is waiting in the training yard, just north of here. Look for the yellow "!"',
-    ]);
+    game.msg('Welcome to Rel\'s World! Drag the left side of the screen (or WASD) to move.', '#ffd84a');
+    game.msg('Coach Bram is in the training yard just north of here. Look for the yellow "!"', '#9fd8ff');
   }
   if (!running) { running = true; last = performance.now(); requestAnimationFrame(frame); }
 }
@@ -51,6 +48,10 @@ function save() { if (game) try { localStorage.setItem(SAVE_KEY, JSON.stringify(
 addEventListener('visibilitychange', () => { if (document.hidden) save(); });
 addEventListener('pagehide', save);
 addEventListener('resize', () => renderer && renderer.resize());
+addEventListener('gamepadconnected', e => {
+  if (game) game.msg(`Controller connected! A attack · X talk · Y bag · B close · LB/RB heal`, '#9fe09f');
+  document.body.classList.add('pad');
+});
 
 // title screen
 const has = !!loadSave();

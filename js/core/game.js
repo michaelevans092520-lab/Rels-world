@@ -255,7 +255,7 @@ export class Game {
     this.emit({ type: 'sfx', name: d.boss ? 'boss' : 'kill' });
     for (const [item, a, b, chance] of d.drops) {
       if (this.r() > chance) continue;
-      if (item === 'headband' && (this.quests.test.stage !== 1 || this.count('headband'))) continue;
+      if (item === 'trophy' && (this.quests.test.stage !== 1 || this.count('trophy'))) continue;
       this.drops.push({ id: this.nextId++, item, n: randInt(this.r, a, b), x: e.x + (this.r() - 0.5) * 0.8, y: e.y + (this.r() - 0.5) * 0.6, t: this.t });
     }
     const q = this.quests.training;
@@ -383,25 +383,25 @@ export class Game {
     if (id === 'bram') {
       const tr = Q.training, ts = Q.test;
       if (tr.stage === 0) { tr.stage = 1; tr.count = 0; this.emit({ type: 'quest' });
-        return say(["Rels! Your dad asked me to look after your training, if anything ever happened.", "And now it has. Those ninjas will be back, and you need to be ready.",
+        return say(["Rels! Ready to train? Anyone heading out into the big world needs to know how to use a sword.",
           "Break 5 straw dummies. Tap Attack near one, and keep swinging.", "Quest started: Training Day"]); }
       if (tr.stage === 1) return say([`${tr.count} of 5 dummies so far. Keep at it!`, 'Tip: change your combat style in the Skills panel to train different skills.']);
       if (tr.stage === 2) { tr.stage = 3; if (!p.swords.includes('iron')) p.swords.push('iron'); p.sword = 'iron'; p.coins += 50; this.giveXp('attack', 120);
         this.emit({ type: 'quest' }); this.emit({ type: 'sfx', name: 'quest' });
         return say(['Not bad at all! Here, take this. An Iron Edge, sharper than that old blade.', 'Quest complete: Training Day', 'Reward: Iron Edge, 50 coins, 120 Attack XP']); }
       if (ts.stage === 0) { ts.stage = 1; this.emit({ type: 'quest' });
-        return say(['One last test before you go after your dad.', 'North of the yard is the old arena. The Straw Colossus lives there. Big, slow, and it hits hard.',
+        return say(['One last test before you head out into the world.', 'North of the yard is the old arena. The Straw Colossus lives there. Big, slow, and it hits hard.',
           'Bring potions from Marta, and train up first if you need to. Quest started: The Final Test']); }
       if (ts.stage === 1) return say(['The Colossus is in the arena, north of the yard. Bring potions!']);
       if (ts.stage === 2) {
-        if (!this.count('headband')) return say(["You beat it? Then where's the proof? Something must have dropped. Go and look in the arena."]);
-        ts.stage = 3; this.removeItem('headband', 1); if (!p.swords.includes('tide')) p.swords.push('tide'); p.coins += 300; this.giveXp('strength', 400);
+        if (!this.count('trophy')) return say(["You beat it? Then where's the proof? Something must have dropped. Go and look in the arena."]);
+        ts.stage = 3; this.removeItem('trophy', 1); if (!p.swords.includes('tide')) p.swords.push('tide'); p.coins += 300; this.giveXp('strength', 400);
         this.emit({ type: 'quest' }); this.emit({ type: 'sfx', name: 'quest' });
-        return say(['A ninja headband... stuffed inside the Colossus? Someone has been hiding things on our island.',
-          "This is the mark of the clan that took your dad. Their trail leads north, up the road to Mossreach.", "Take my old Tide Cutter. You've earned it.",
+        return say(["The Colossus's horn! You really did it. Nobody has beaten that old straw heap in years.",
+          "You're ready for the rest of the world now. Take my old Tide Cutter. You've earned it.",
           'Quest complete: The Final Test', 'Reward: Tide Cutter, 300 coins, 400 Strength XP']);
       }
-      return say(["You're ready, Rels. Take the road north to Mossreach and follow the ninjas' trail. Be careful out there."]);
+      return say(["You're ready, Rels. The whole world is out there. Mossreach is up the road north. Be careful!"]);
     }
     if (id === 'willa') {
       const q = Q.wings;
@@ -420,7 +420,7 @@ export class Game {
     if (id === 'nana') {
       const q = Q.cat;
       if (q.stage === 0) { q.stage = 1; this.emit({ type: 'quest' });
-        return say(["Rels, sweetie! That ginger cat of yours bolted the night the ninjas came.", 'I saw it run deep into Gloomwood, past where the path ends. Could you fetch it?', 'Quest started: Where Did the Cat Go?']); }
+        return say(["Rels, sweetie! That ginger cat of yours ran off chasing a butterfly.", 'I saw it run deep into Gloomwood, past where the path ends. Could you fetch it?', 'Quest started: Where Did the Cat Go?']); }
       if (q.stage === 1) return say(['Gloomwood is east. Follow the path, and keep going past where it stops.']);
       if (q.stage === 2) { q.stage = 3; this.flags.catFollowing = false; this.flags.catHome = true; p.coins += 80; this.addItem('apple', 5);
         this.emit({ type: 'quest' }); this.emit({ type: 'sfx', name: 'meow' });
@@ -455,6 +455,7 @@ export class Game {
       if (this.world.isSolid(p.x, p.y)) { p.x = this.world.start.x; p.y = this.world.start.y; }
       for (const k in s.q) if (this.quests[k]) this.quests[k] = s.q[k];
       Object.assign(this.flags, s.f);
+      for (const sl of p.inv) if (sl && sl.id === 'headband') sl.id = 'trophy';   // renamed item
     } catch (e) { /* bad save: start fresh */ }
   }
 }

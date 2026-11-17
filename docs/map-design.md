@@ -17,7 +17,7 @@ Coordinates and data live in `REGIONS` in `js/core/data.js`.
 | Frostmere | 40-50 | Strength warriors | Snow, pine forests | North-west |
 | Cinder Isle | 50-65 | Fire benders | Ash and lava pools, charred trees | North-east |
 | Coral Drift | 65-80 | Water benders | Pink coral sand, lagoons, palms | East |
-| Starfall | 80-99 | Air & star magic | Indigo star-grass, glowing trees (endgame, ninja clan base) | North centre |
+| Starfall | 80-99 | Air & star magic | Indigo star-grass, glowing trees (endgame) | North centre |
 
 Roads: Ember Key → Mossreach → Starfall; Mossreach → Coral Drift → Cinder Isle; Ember Key → Saltglass → Duskfen → Frostmere → Starfall → Cinder Isle.
 

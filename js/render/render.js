@@ -311,7 +311,7 @@ export function questMark(g, id) {
   if (id === 'bram') {
     if (q.training.stage === 0 || q.training.stage === 2) return q.training.stage ? '?' : '!';
     if (q.training.stage === 3 && q.test.stage === 0) return '!';
-    if (q.test.stage === 2 && g.count('headband')) return '?';
+    if (q.test.stage === 2 && g.count('trophy')) return '?';
   }
   if (id === 'willa') { if (q.wings.stage === 0) return '!'; if (q.wings.stage === 1 && g.count('wing') >= 3) return '?'; }
   if (id === 'nana') { if (q.cat.stage === 0) return '!'; if (q.cat.stage === 2) return '?'; }

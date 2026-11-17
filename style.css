@@ -117,3 +117,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .btn { border: 0; border-radius: 999px; padding: 15px 34px; font-family: var(--display); font-weight: 800; font-size: 17px; background: var(--hud); color: var(--ink); min-width: 220px; }
 .btn.ghost { background: transparent; color: var(--hud); border: 2px solid var(--line); }
 .tiny { font-size: 12px; color: var(--muted); line-height: 1.5; margin: 8px 0 0; }
+
+/* hide the touch hint when a controller is in use */
+body.pad .movehint { display: none; }
