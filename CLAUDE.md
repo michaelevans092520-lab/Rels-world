@@ -2,8 +2,12 @@
 
 Read this first in every new chat, then read `docs/PROGRESS.md` to see where we left off.
 
+> **ORIGINALITY RULE: this game will be sold.** Before writing code or adding any asset, follow
+> `docs/IP-RULES.md`: everything original and owned, nothing copied from other games, tutorials or
+> repos, no unapproved libraries, and every asset logged in `docs/IP-LOG.md`.
+
 ## What this is
-A top-down open-world RPG for the owner's kid, starring **Rels** (brown ponytail, black cat tee, white flower pants, black crocs, ginger cat that rides on her head). OSRS / MapleStory feel, phone-first with an on-screen joystick. The original runner game lives in the owner's claude.ai artifacts as "Rel's World" and is the source for characters and swords. Its old "find Dad" storyline is shelved, so don't use it.
+An original, commercial online RPG (MMORPG) with an overhead camera and free-coordinate movement, playable with joystick, keyboard or controller. The main character is **Rels** (brown ponytail, black cat tee, white flower pants, black crocs, ginger cat that rides on her head). Other games are only reference points for *feel*. Never borrow their mechanics, formulas, names or content. The owner's original runner game (claude.ai artifact "Rel's World") is the owner's own work; its "find Dad" storyline is shelved.
 
 ## For the whole project
 - **Commercial game, to be sold later.** Everything that ships must be original and fully owned: no store/CC0/AI-generated assets in the final game (placeholders only, tracked), commissioned art needs a written IP assignment, no names echoing other games, fonts must allow commercial redistribution. Never ship prototype code.
@@ -38,6 +42,8 @@ A top-down open-world RPG for the owner's kid, starring **Rels** (brown ponytail
 - Test link: the owner's private Claude artifact (see above). GitHub Pages no longer works because the repo is private.
 
 ## Design docs
+- `docs/IP-RULES.md`: originality and IP rules (must read)
+- `docs/IP-LOG.md`: log of every asset and where it came from
 - `docs/PROGRESS.md`: where we left off, next steps
 - `docs/map-design.md`: Pangea map, 8 regions, level ranges
 - `docs/builds.md`: ideas for unique player builds (from the prototype era, not approved designs)

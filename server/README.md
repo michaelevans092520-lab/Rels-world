@@ -1,5 +1,7 @@
 # Rel's World: server core
 
+> **Original code only. This game will be sold.** Read `../docs/IP-RULES.md` before changing anything here.
+
 The authoritative game logic. It is written from scratch in TypeScript, follows clean-room rules, and is not tied to any engine.
 
 ## How it works

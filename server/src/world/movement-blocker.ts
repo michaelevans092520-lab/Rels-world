@@ -1,3 +1,4 @@
+// ORIGINAL CODE: Rel's World is a commercial game. Read docs/IP-RULES.md before editing.
 // What stops movement in the free-coordinate world.
 //
 // The movement code only asks one question: "can something travel in a straight line from A to B?"

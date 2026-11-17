@@ -1,3 +1,4 @@
+// ORIGINAL CODE: Rel's World is a commercial game. Read docs/IP-RULES.md before editing.
 // Commands: everything a player wants to do arrives as a command object.
 // The server decides whether to accept it and answers with a list of state updates.
 // Because commands and updates are plain data, they can travel over any network

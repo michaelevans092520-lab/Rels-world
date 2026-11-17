@@ -1,3 +1,4 @@
+// ORIGINAL CODE: Rel's World is a commercial game. Read docs/IP-RULES.md before editing.
 // The command router connects each command type to the function that handles it.
 // New gameplay is added by writing one handler and registering it, without
 // touching the router or the tick loop.

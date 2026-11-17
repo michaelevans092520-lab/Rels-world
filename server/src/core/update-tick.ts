@@ -1,3 +1,4 @@
+// ORIGINAL CODE: Rel's World is a commercial game. Read docs/IP-RULES.md before editing.
 // The tick: the server's heartbeat. Each call advances the world by one step.
 //
 // Order inside a tick (kept simple and fixed so results are predictable):

@@ -1,3 +1,4 @@
+// ORIGINAL CODE: Rel's World is a commercial game. Read docs/IP-RULES.md before editing.
 // MoveCommand: the one movement command for every input device.
 // Keyboard (WASD), game controllers and touch joysticks all send the same thing:
 // a 2D direction vector (each part from -1.0 to 1.0, total length at most 1.0) plus a facing angle.

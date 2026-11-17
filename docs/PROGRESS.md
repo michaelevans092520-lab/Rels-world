@@ -16,6 +16,8 @@ Newest first. Update this at the end of every work session.
 - The game will be sold later, so only original, fully owned assets ship. AI-generated or store assets are placeholders only.
 - The repo goes **private** (owner switches it in GitHub settings). Test builds go to the private Claude test artifact.
 
+- Added `docs/IP-RULES.md` (originality rules), `docs/IP-LOG.md` (asset log), and an originality notice at the top of CLAUDE.md, the server README and every server source file.
+
 **Next up:** owner's answers to the spec-1 questions below, then the next spec (combat? terrain model?).
 
 **Spec-1 questions for the owner (current behavior in brackets)**

@@ -1,3 +1,4 @@
+// ORIGINAL CODE: Rel's World is a commercial game. Read docs/IP-RULES.md before editing.
 // Game-wide tuning numbers, kept as plain data so they can be changed without touching logic.
 
 export const GAME_RULES = {

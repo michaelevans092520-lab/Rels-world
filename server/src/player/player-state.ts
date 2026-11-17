@@ -1,3 +1,4 @@
+// ORIGINAL CODE: Rel's World is a commercial game. Read docs/IP-RULES.md before editing.
 // A player as the server sees it. Plain data only (no methods), so the whole player can be
 // saved, copied, or sent over the network without conversion.
 
