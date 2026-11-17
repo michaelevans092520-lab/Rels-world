@@ -12,6 +12,10 @@ Newest first. Update this at the end of every work session.
 
 - **Spec 1 (owner): Player + MoveCommand.** `PlayerState` (id, name, level, x/y/z, facingAngle, baseMoveSpeed 5.0, hidden currentHealth/maxHealth, stunned/rooted), 20 ticks/s, MoveCommand with a normalized direction vector + facing angle, server checks (alive/not stunned/rooted, vector length ≤ 1.0, no walls or map edge, per-tick distance cap including multiple commands in one tick). Wounded-state reminders are in the code comments. 20 tests pass.
 
+**Decisions (2026-11-17)**
+- The game will be sold later, so only original, fully owned assets ship. AI-generated or store assets are placeholders only.
+- The repo goes **private** (owner switches it in GitHub settings). Test builds go to the private Claude test artifact.
+
 **Next up:** owner's answers to the spec-1 questions below, then the next spec (combat? terrain model?).
 
 **Spec-1 questions for the owner (current behavior in brackets)**
