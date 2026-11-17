@@ -1,0 +1,14 @@
+{
+  "name": "rels-world-server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Authoritative game server core for Rel's World. Engine-agnostic, no runtime dependencies.",
+  "scripts": {
+    "build": "tsc -p .",
+    "test": "tsc -p . && node dist/test/core.test.js"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  }
+}

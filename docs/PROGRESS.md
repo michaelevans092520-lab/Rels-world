@@ -2,6 +2,20 @@
 
 Newest first. Update this at the end of every work session.
 
+## 2026-11-17: Clean-room server core started
+**Direction change:** Rel's World is now planned as a **commercial MMORPG**. New rules (clean room, human-led design, small modules, no unapproved dependencies, authoritative server, command objects, TypeScript only) are in `CLAUDE.md`.
+
+**Done**
+- The browser prototype is saved on the `prototype` branch. It's still live on GitHub Pages for playtesting, but it is **not** the basis for the real game.
+- New `server/` folder (TypeScript, no runtime dependencies): `GameState`, `Command` / `StateUpdate` / `CommandResult`, `CommandRouter`, and `updateTick()`. 7 passing tests with a hand-written test runner.
+- Approved dev tool: TypeScript compiler (Apache-2.0).
+
+**Next up:** waiting on the owner's first design spec. Suggested: the player's state variables and the `MoveCommand` rules (speed, collision, what the server checks).
+
+**Open decisions**
+- Visual engine for the client (not chosen yet).
+- Whether the prototype stays on `main` (it serves the GitHub Pages link) or moves fully to its branch.
+
 ## 2026-11-16: Pangea map
 **Done**
 - Phase 1 game (Ember Key): joystick + keyboard movement, OSRS-style tick combat (0.6 s ticks, hit splats, Attack/Strength/Defence/Hitpoints with the OSRS XP curve, combat styles), loot, 24-slot bag, Marta's shop (7 swords from the runner game, potions, apples, selling), auto-save on the device.
