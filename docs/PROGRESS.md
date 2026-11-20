@@ -11,6 +11,7 @@ Newest first. Update this at the end of every work session.
   - Quests have requirements, and there's a **quest log** that will live in the start menu (client UI, later).
   - Each country has **areas** with monsters (difficulty grouped by area, spread across all countries).
   - **Players start in Country 1.** The tutorial happens there, in the shared open world.
+- Tutorial spec started in `docs/specs/tutorial.md` (decided: open-world rules, all player interaction allowed, only leaving the start area locked, skip on later characters, guide NPC + hints + stuck reminders, can't die in the tutorial, guide restores stats, starter reward).
 - **Waiting on the owner:** the rest of the tutorial spec (10 questions asked: location, PvP protection, steps, completion rules, locks, skipping, reward), plus whether Country 1 is the starter and tutorial area.
 
 ## 2026-11-17: Clean-room server core started
