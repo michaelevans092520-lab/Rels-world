@@ -6,7 +6,12 @@ Newest first. Update this at the end of every work session.
 - Regions renamed to placeholders **Country 1–8** (in level order) in `docs/map-design.md`. Old names are kept only as a prototype reference at the bottom.
 - **Owner's decision: no level ranges per country.** Difficulty is spread everywhere; the game's overall goal is quests and levels.
 - Flagged: don't use "bender" for magic styles (too close to an existing franchise). "Magic" is the placeholder.
-- **Waiting on the owner:** the tutorial spec (10 questions asked: location, PvP protection, steps, completion rules, locks, skipping, reward), plus whether Country 1 is the starter and tutorial area.
+- **Owner's decisions (2026-11-20):**
+  - No level or health is ever displayed, for players, monsters or NPCs. Only the monster/NPC itself is shown.
+  - Quests have requirements, and there's a **quest log** that will live in the start menu (client UI, later).
+  - Each country has **areas** with monsters (difficulty grouped by area, spread across all countries).
+  - **Players start in Country 1.** The tutorial happens there, in the shared open world.
+- **Waiting on the owner:** the rest of the tutorial spec (10 questions asked: location, PvP protection, steps, completion rules, locks, skipping, reward), plus whether Country 1 is the starter and tutorial area.
 
 ## 2026-11-17: Clean-room server core started
 **Direction change:** Rel's World is now planned as a **commercial MMORPG**. New rules (clean room, human-led design, small modules, no unapproved dependencies, authoritative server, command objects, TypeScript only) are in `CLAUDE.md`.

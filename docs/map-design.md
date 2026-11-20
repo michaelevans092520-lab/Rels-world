@@ -35,8 +35,7 @@ Roads (prototype layout): 1 → 2 → 8; 2 → 7 → 6; 1 → 3 → 4 → 5 → 
 
 ## Open questions
 - Final country names (owner).
-- Starter area and tutorial location (Country 1?).
-- With difficulty spread everywhere: how players find content that fits them (marked danger spots? monster levels shown? quest givers?), and whether quests have level requirements.
+- Decided: players start in Country 1, where the tutorial happens. Each country has areas with monsters; quests have requirements; no level or health is displayed anywhere.
 - Whether the split happens, and how.
 - Real monsters, bosses and trainers per country.
 
