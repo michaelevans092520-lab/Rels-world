@@ -3,9 +3,9 @@
 //
 // Order inside a tick (kept simple and fixed so results are predictable):
 //   1. Apply every command that arrived since the last tick, oldest first.
-//   2. Advance the clock.
-// Steps for things that happen on their own (monsters, regeneration, ...) slot in
-// between 1 and 2 once they are designed.
+//   2. Run each tick system (e.g. tutorial tracking), in the order given. Each one sees all
+//      updates so far, including those from earlier systems.
+//   3. Advance the clock.
 //
 // How often this runs (the tick length) is decided by the caller, not here,
 // so the same logic works for a real server, a test, or an offline single-player game.
@@ -13,6 +13,7 @@
 import { Command, CommandResult, StateUpdate } from './commands.js';
 import { CommandRouter } from './command-router.js';
 import { GameState } from './game-state.js';
+import { TickSystem } from './tick-system.js';
 
 /** What one tick produced, for sending to clients and for logging. */
 export interface TickResult {
@@ -29,6 +30,7 @@ export function updateTick(
   deltaSeconds: number,
   queuedCommands: readonly Command[],
   router: CommandRouter,
+  systems: readonly TickSystem[] = [],
 ): TickResult {
   // A negative or broken time step would run the clock backwards, so refuse it outright.
   if (!Number.isFinite(deltaSeconds) || deltaSeconds < 0) {
@@ -45,7 +47,12 @@ export function updateTick(
     updates.push(...result.updates);
   }
 
-  // 2. Clock.
+  // 2. Tick systems.
+  for (const system of systems) {
+    updates.push(...system(state, updates));
+  }
+
+  // 3. Clock.
   state.tickNumber += 1;
   state.elapsedSeconds += deltaSeconds;
 

@@ -18,9 +18,24 @@ No cutscenes: the game never takes control away from the player.
 - **Ending:** leaving the start area unlocks, and the player gets a **starter reward**.
 - **Can't die during the tutorial.** Tutorial players can still be attacked (open-world rules), but they cannot be killed. The **guide NPC restores their stats.**
 
-## Still needed from the owner
-- **Step order and "done" rules,** e.g. "move 10 units → hit the training target 3 times → talk to the guide → accept a quest → pick up an item → equip it."
-- **"Taking too long / stuck":** after how many seconds without progress does a reminder show? Repeat how often?
-- **Can't die:** does health stop at 1 (or another floor)? Does the guide restore stats automatically when health gets low, only when the player talks to them, or both? Which stats ("restore" = health only for now)?
-- **Starter reward:** which items or gear (to be defined as data).
-- **Start area boundary:** where in Country 1 and how big.
+- **Order (owner):** move → pick up an item → equip it → fight a training target → accept the first quest from the guide.
+- **Stuck reminders (owner):** first after 30 s without progress on a step, then every 30 s. Progress resets the timer.
+- **Can't die (owner):** health stops at 1; the guide restores health automatically when it gets low.
+  - 🔔 **Reminder for Claude:** the owner wants to add extra guide chat later. Ask when NPC dialogue gets designed.
+- **Start area (owner):** about 100 units across, a circle with radius 50 around its center.
+
+## Built (2026-11-20), in `server/src/tutorial/` + `server/src/data/tutorial-rules.ts`
+- Progress per player, steps as data, hints when a step starts, stuck reminders, health floor + guide restore, start-area lock in MoveCommand, completion (unlocks the area, reports the reward), skip flag on character creation. 14 tests.
+- The tutorial **listens for updates** from other systems. Until those systems exist, only the **move** step can happen in real play:
+  - `itemPickedUp` and `itemEquipped` → need the items/bag system
+  - `trainingTargetHit` → needs combat
+  - `questAccepted` → needs NPCs/quests
+
+## Defaults to confirm (Claude filled these in; change them in `tutorial-rules.ts`)
+- Move step: **10 units** walked. Fight step: **3 hits** on the training target.
+- "Low" health for the guide restore: **25%** of max.
+- "Restore stats" restores **health only** for now.
+- Hint texts are **draft wording**.
+- Start-area center: **placeholder (0, 0)** until Country 1's map exists.
+- Starter reward: **empty** until items exist (owner names them).
+- Skipping is a flag set when a character is created; the **account system** that decides it doesn't exist yet.

@@ -15,7 +15,8 @@ const blocker = new BoxMovementBlocker({ minX: 0, maxX: 100, minY: 0, maxY: 100 
 /** A world with one healthy player "p1" at (50, 50) and a router that knows MoveCommand. */
 function setup(): { state: GameState; router: CommandRouter } {
   const state = createGameState();
-  state.players.p1 = createPlayer({ id: 'p1', name: 'Rels', level: 1, maxHealth: 100, x: 50, y: 50 });
+  // Tutorial already done, so the start-area limit doesn't interfere with these movement tests.
+  state.players.p1 = createPlayer({ id: 'p1', name: 'Rels', level: 1, maxHealth: 100, x: 50, y: 50, tutorialRequired: false });
   const router = new CommandRouter();
   router.register(MOVE_COMMAND_TYPE, createMoveCommandHandler(blocker));
   return { state, router };

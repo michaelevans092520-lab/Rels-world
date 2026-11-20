@@ -28,7 +28,7 @@ An original, commercial online RPG (MMORPG) with an overhead camera and free-coo
 - **No unapproved dependencies:** no libraries, frameworks or packages without explicit approval. If one seems necessary, stop and state its license and any commercial limits first. Approved so far: the TypeScript compiler (`typescript`, Apache-2.0) as a dev tool. Runtime dependencies: none.
 - **Plain, descriptive names.** Avoid naming conventions recognizable from existing projects.
 - **Authoritative server:** all gameplay (combat, inventory, movement math, trading) is pure server-side logic. World state is plain data with no screen, audio or UI dependencies.
-- **Commands in, updates out:** player actions are command objects (`MoveCommand`, `AttackCommand`, ...) handled through `CommandRouter`, returning `StateUpdate`s. The entry point is `updateTick(state, deltaSeconds, commands, router)`.
+- **Commands in, updates out:** player actions are command objects (`MoveCommand`, `AttackCommand`, ...) handled through `CommandRouter`, returning `StateUpdate`s. The entry point is `updateTick(state, deltaSeconds, commands, router, systems)`. Owner specs live in `docs/specs/`.
 - **Data-driven:** stats, levels and rules live in plain data objects, not hardcoded in functions.
 - **One language: TypeScript** in `server/`. Don't mix languages there.
 - Test with `cd server && tsc -p . && node dist/test/run-all.js` before pushing.

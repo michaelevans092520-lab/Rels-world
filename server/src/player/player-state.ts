@@ -3,6 +3,7 @@
 // saved, copied, or sent over the network without conversion.
 
 import { GAME_RULES } from '../data/game-rules.js';
+import { createTutorialProgress, TutorialProgress } from '../tutorial/tutorial-state.js';
 
 export interface PlayerState {
   id: string;
@@ -40,6 +41,9 @@ export interface PlayerState {
   /** Rooted: cannot move, but may still be able to do other things later. */
   isRooted: boolean;
 
+  /** Tutorial progress. Every first character must finish it before leaving the start area. */
+  tutorial: TutorialProgress;
+
   /** Anti-cheat bookkeeping: the tick number of this player's most recent movement... */
   lastMoveTick: number;
   /** ...and how far they have already moved during that tick, in world units. */
@@ -56,6 +60,8 @@ export interface NewPlayerDetails {
   y: number;
   z?: number;
   facingAngle?: number;
+  /** False lets this character skip the tutorial (owner: later characters on an account may skip). Default: required. */
+  tutorialRequired?: boolean;
 }
 
 export function createPlayer(details: NewPlayerDetails): PlayerState {
@@ -66,6 +72,7 @@ export function createPlayer(details: NewPlayerDetails): PlayerState {
     baseMoveSpeed: GAME_RULES.playerBaseMoveSpeed,
     currentHealth: details.maxHealth, maxHealth: details.maxHealth,
     isStunned: false, isRooted: false,
+    tutorial: createTutorialProgress(details.tutorialRequired ?? true),
     lastMoveTick: -1, distanceMovedThisTick: 0,
   };
 }

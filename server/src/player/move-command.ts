@@ -9,6 +9,7 @@ import { CommandHandler } from '../core/command-router.js';
 import { GameState } from '../core/game-state.js';
 import { GAME_RULES, secondsPerTick } from '../data/game-rules.js';
 import { MovementBlocker } from '../world/movement-blocker.js';
+import { tutorialAllowsPosition } from '../tutorial/tutorial-safety.js';
 import { canMove, effectiveMoveSpeed, PlayerState } from './player-state.js';
 
 export const MOVE_COMMAND_TYPE = 'move';
@@ -57,9 +58,11 @@ export function processMoveCommand(state: GameState, command: MoveCommand, block
   if (step.length > 0 && blocker.isPathBlocked(player.x, player.y, targetX, targetY)) {
     return rejectCommand('Path is blocked.');
   }
+  // Check 3c: tutorial players can't leave the start area until they finish.
+  if (!tutorialAllowsPosition(player, targetX, targetY)) return rejectCommand('Finish the tutorial to leave the start area.');
 
   applyMove(player, state.tickNumber, targetX, targetY, command.facingAngle, step.length);
-  return acceptCommand([{ type: 'playerMoved', playerId: player.id, x: player.x, y: player.y, z: player.z, facingAngle: player.facingAngle }]);
+  return acceptCommand([{ type: 'playerMoved', playerId: player.id, x: player.x, y: player.y, z: player.z, facingAngle: player.facingAngle, distance: step.length }]);
 }
 
 /** Returns a description of what is wrong with the input, or null if it is fine. */
