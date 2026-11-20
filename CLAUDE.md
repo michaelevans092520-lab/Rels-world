@@ -13,6 +13,7 @@ An original, commercial online RPG (MMORPG) with an overhead camera and free-coo
 - **Commercial game, to be sold later.** Everything that ships must be original and fully owned: no store/CC0/AI-generated assets in the final game (placeholders only, tracked), commissioned art needs a written IP assignment, no names echoing other games, fonts must allow commercial redistribution. Never ship prototype code.
 - **The repo is private** (owner's decision, 2026-11-17). GitHub Pages is off, so test builds go to the owner's private Claude test artifact: https://claude.ai/artifact/23AVWwAEDBwDzEMwp9USez
 - **Keep important logic on the server.** Client code can always be inspected, so anything that matters (combat, loot, trading) stays server-side.
+- **When asking the owner design questions, use tappable multiple-choice prompts** (the AskUserQuestion tool) whenever possible. The owner prefers choosing from a list.
 - **No cutscenes** (owner's rule). The game never takes control away from the player.
 - **At the end of every work session, update `docs/PROGRESS.md`**: what was done, what's next, open decisions.
 
