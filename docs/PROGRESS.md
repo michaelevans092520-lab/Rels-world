@@ -4,6 +4,7 @@ Newest first. Update this at the end of every work session.
 
 ## 2026-11-20: Map names
 - Regions renamed to placeholders **Country 1–8** (in level order) in `docs/map-design.md`. Old names are kept only as a prototype reference at the bottom.
+- **Owner's decision: no level ranges per country.** Difficulty is spread everywhere; the game's overall goal is quests and levels.
 - Flagged: don't use "bender" for magic styles (too close to an existing franchise). "Magic" is the placeholder.
 - **Waiting on the owner:** the tutorial spec (10 questions asked: location, PvP protection, steps, completion rules, locks, skipping, reward), plus whether Country 1 is the starter and tutorial area.
 
