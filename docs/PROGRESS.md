@@ -14,7 +14,8 @@ Newest first. Update this at the end of every work session.
 - Tutorial spec started in `docs/specs/tutorial.md` (decided: open-world rules, all player interaction allowed, only leaving the start area locked, skip on later characters, guide NPC + hints + stuck reminders, can't die in the tutorial, guide restores stats, starter reward).
 - **Tutorial built** in the server (see `docs/specs/tutorial.md`): steps as data, per-player progress, hints + 30 s stuck reminders, can't die (health floor 1, guide restores at low health), start-area lock (radius 50), completion unlock + reward hook, skip flag. Added a tick-system stage to `updateTick` (commands → systems → clock). 41 tests pass.
 - Only the move step works in real play until items, combat and quests exist.
-- **Next:** owner wants **fast travel** designed as movement-rule data that items can point to later (ask with a choice prompt). Then items/bag (unblocks two tutorial steps).
+- **Fast travel spec started** in `docs/specs/fast-travel.md`: mounts + teleport points (teleport items later), fighting allowed on mounts, travel depends on the mount's health, teleports cost coins/items, need discovery, maybe blocked during PvP fights. Several reminders saved there for the owner.
+- **Next:** the rest of the fast-travel details (mount speed, mount health, discovery, teleport timing), then items/bag (unblocks two tutorial steps and teleport costs).
 - Map plan: big-world systems from day one, content added gradually; Country 1 small and dense first.
 
 ## 2026-11-17: Clean-room server core started
